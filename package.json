@@ -1,5 +1,5 @@
 {
-  "name": "wechaty-mqtt-link1.0",
+  "name": "wechaty-puppet-xp-demo",
   "version": "0.1.2",
   "description": "Demo for wechaty-puppet-xp",
   "author": "atorber",
@@ -7,20 +7,19 @@
   "dependencies": {
     "@vikadata/vika": "^1.0.5",
     "airtable": "^0.11.1",
-    "flow": "^0.2.3",
-    "fs": "^0.0.1-security",
     "memory-card": "^1.0.3",
     "moment": "^2.29.1",
     "mqtt": "^4.2.8",
-    "node-gyp": "^8.2.0",
     "protobufjs": "^6.11.2",
     "qrcode-terminal": "^0.12.0",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6",
     "uuid": "^8.3.2",
-    "wechaty": "^0.69.45",
-    "wechaty-puppet-padlocal": "^0.4.2",
-    "wechaty-puppet-xp": "^0.7.21"
+    "wechaty": "~1.10.4",
+    "wechaty-plugin-contrib": "~1.0.18",
+    "wechaty-puppet-oicq": "^1.10.2",
+    "wechaty-puppet-wechat": "~1.10.4",
+    "wechaty-puppet-wechat4u": "~1.10.2",
+    "wechaty-puppet-whatsapp": "~1.10.4",
+    "wechaty-puppet-xp": "^1.10.2"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
@@ -34,18 +33,6 @@
   },
   "scripts": {
     "start": "node main.js",
-    "start:mp": "node index.js",
-    "xp": "node xp.js",
-    "gm": "node wxtool.js",
-    "start:pm2": "pm2 start wxtool.js",
-    "runlist": "pm2 list",
-    "logs": "pm2 logs",
-    "restart": "pm2 restart wxtool.js",
-    "stop": "pm2 stop wxtool.js"
-  },
-  "git": {
-    "scripts": {
-      "pre-push": "npx git-scripts-pre-push"
-    }
+    "start:mp": "node index.js"
   }
 }

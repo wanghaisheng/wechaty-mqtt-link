@@ -17,23 +17,18 @@
  *
  */
 
-const {
-    Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram, MessageType
-} = require("wechaty");
-const { PuppetPadlocal } = require('wechaty-puppet-padlocal');
-const { FileBox } = require('file-box')
-const moment = require('moment');
-
 const { Device } = require('./mp-chat/bot')
-
+const { Contact, log, Message, ScanStatus, WechatyBuilder, UrlLink, MiniProgram, MessageType
+} = require("wechaty");
 const qrcodeTerminal = require('qrcode-terminal');
 const { PuppetXp } = require('wechaty-puppet-xp')
+const moment = require('moment')
 
 // 维格表相关配置
 const {
     VikaBot
 } = require('./mp-chat/vika')
-const VIKA_TOKEN = '' // 维格表token
+const VIKA_TOKEN = '替换为维格表token'
 let vika = new VikaBot(VIKA_TOKEN)
 
 let secret
@@ -41,14 +36,22 @@ let reportList
 let device
 
 // 机器人相关配置
-const name = 'wechaty-puppet-padlocal';
-const token = process.env.token || ''// 瓦力
+const puppet_used = 1 //切换puppet，0-puppet-wechat 1-puppet-xp
+const name = 'mp-chat';
+let puppet
 
-const puppet = new PuppetPadlocal({
-    token,
-});
+switch (puppet_used) {
+    case 0:
+        puppet = 'wechaty-puppet-wechat'
+        break;
+    case 1:
+        puppet = new PuppetXp()
+        break;
+    default:
+        puppet = 'wechaty-puppet-wechat'
+}
 
-const bot = new Wechaty({
+const bot = WechatyBuilder.build({
     name,
     puppet,
 });
