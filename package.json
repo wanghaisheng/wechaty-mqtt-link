@@ -1,7 +1,7 @@
 {
-  "name": "wechaty-mqtt-link1.0",
-  "version": "0.1.2",
-  "description": "Demo for wechaty-puppet-xp",
+  "name": "wechaty-mqtt-link",
+  "version": "0.1.0",
+  "description": "mqtt link for wechaty",
   "author": "atorber",
   "license": "Apache-2.0",
   "engines": {
@@ -20,18 +20,14 @@
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "uuid": "^8.3.2",
-    "wechaty": "^0.68.1",
-    "wechaty-puppet-padlocal": "^0.4.2"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
-    "@chatie/tsconfig": "^4.6.2",
     "check-node-version": "^4.2.1",
-    "is-pr": "^2.0.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "wechaty": "^0.68.1",
+    "wechaty-puppet-padlocal": "^0.4.2"
   },
   "scripts": {
     "start": "node main.js",

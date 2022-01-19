@@ -1,0 +1,127 @@
+import { VikaBot } from '../vika.js'
+import { Wechaty, ScanStatus, log, Message } from 'wechaty'
+import fs from 'fs'
+import { FileBox } from 'file-box'
+import console from 'console'
+
+let msgList = []
+
+let wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function onMessage(message) {
+  // console.debug(message)
+  try {
+    // const config = await getVikaConfig()
+    // // console.debug(config)
+    // const { token, reportList, vikaConfig } = config
+    // 维格表相关配置
+    let vika = new VikaBot()
+
+    let file_payload = {}
+    let uploaded_attachments = ''
+    let msg_type = 'Unknown'
+    let msgId = message.id
+    let file = ''
+    let fileDate = ''
+    let filePath = ''
+
+    switch (message.type()) {
+      // 文本消息
+      case Message.Type.Text:
+        msg_type = 'Text'
+        // const text = message.text();
+        break;
+
+      // 图片消息
+      case Message.Type.Image:
+        msg_type = 'Image'
+        file = await message.toImage().artwork()
+
+        break;
+
+      // 链接卡片消息
+      case Message.Type.Url:
+        msg_type = 'Url'
+        const urlLink = await message.toUrlLink();
+        // urlLink: 链接主要数据：包括 title，URL，description
+
+        file = await message.toFileBox();
+        break;
+
+      // 小程序卡片消息
+      case Message.Type.MiniProgram:
+        msg_type = 'MiniProgram'
+
+        const miniProgram = await message.toMiniProgram();
+        /*
+        miniProgram: 小程序卡片数据
+        {
+          appid: "wx363a...",
+          description: "贝壳找房 - 真房源",
+          title: "美国白宫，10室8厅9卫，99999刀/月",
+          iconUrl: "http://mmbiz.qpic.cn/mmbiz_png/.../640?wx_fmt=png&wxfrom=200",
+          pagePath: "pages/home/home.html...",
+          shareId: "0_wx363afd5a1384b770_..._1615104758_0",
+          thumbKey: "84db921169862291...",
+          thumbUrl: "3051020100044a304802010002046296f57502033d14...",
+          username: "gh_8a51...@app"
+        }
+       */
+        break;
+
+      // 语音消息
+      case Message.Type.Audio:
+        msg_type = 'Audio'
+        file = await message.toFileBox();
+
+        break;
+
+      // 视频消息
+      case Message.Type.Video:
+        msg_type = 'Video'
+
+        file = await message.toFileBox();
+        break;
+
+      // 动图表情消息
+      case Message.Type.Emoticon:
+        msg_type = 'Emoticon'
+        file = await message.toFileBox();
+
+        break;
+
+      // 文件消息
+      case Message.Type.Attachment:
+        msg_type = 'Attachment'
+        file = await message.toFileBox();
+
+        break;
+
+      // 其他消息
+      default:
+        break;
+    }
+
+    if (file) {
+      filePath = 'images/' + msgId + '.' + file.name.split('.').pop()
+      const writeStream = fs.createWriteStream(filePath)
+      await file.pipe(writeStream)
+      await wait(200)
+      let readerStream = fs.createReadStream(filePath);
+      uploaded_attachments = await vika.upload(readerStream)
+      fs.unlink(filePath, (err) => {
+        console.debug(filePath, '已删除')
+      })
+    }
+
+    // console.debug(message)
+    vika.addChatRecord(message, uploaded_attachments, msg_type)
+
+  } catch (e) {
+    console.log('监听消息失败', e)
+  }
+}
+
+export { onMessage }
+
+export default onMessage
