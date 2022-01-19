@@ -2,12 +2,6 @@ const mqtt = require('mqtt')
 const { v4 } = require('uuid')
 const { FileBox } = require('file-box')
 
-// protobuf相关配置
-var protobuf = require('protobufjs');
-var messageConfig = require('./message');
-var MessageRoot = protobuf.Root.fromJSON(messageConfig);
-var MessageMessage = MessageRoot.lookupType("Message");
-
 class Device {
     constructor(host, port, username, password, clientId) {
         this.bot = {}
@@ -229,7 +223,7 @@ class Device {
             }
         }
         message.properties[name] = info
-        message = this.set_pb_msg(message)
+        message = JSON.stringify(message)
         return message
     }
 
@@ -243,23 +237,8 @@ class Device {
             }
         }
         message.events[name] = info
-        message = this.set_pb_msg(message)
+        message = JSON.stringify(message)
         return message
-    }
-
-    set_pb_msg(payload) {
-        if (payload.events) {
-            payload.events = JSON.stringify(payload.events)
-        }
-        if (payload.properties) {
-            payload.properties = JSON.stringify(payload.properties)
-        }
-        payload.timestamp = String(payload.timestamp)
-        // console.debug(payload)
-        var message = MessageMessage.create(payload);
-        var buffer = MessageMessage.encode(message).finish();
-        // console.log("buffer", buffer);
-        return buffer
     }
 
     async send(params) {
