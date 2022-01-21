@@ -1,7 +1,8 @@
 {
   "name": "wechaty-mqtt-link",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "mqtt link for wechaty",
+  "main": "src/index.js",
   "author": "atorber",
   "license": "Apache-2.0",
   "engines": {
@@ -28,7 +29,8 @@
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
-    "check-node-version": "^4.2.1"
+    "check-node-version": "^4.2.1",
+    "wechaty-mqtt-link": "^0.2.1"
   },
   "scripts": {
     "start": "node main.js",
@@ -41,5 +43,13 @@
     "logs": "pm2 logs",
     "restart": "pm2 restart wxtool.js",
     "stop": "pm2 stop wxtool.js"
+  },
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atorber/wechaty-mqtt-link.git"
   }
 }
