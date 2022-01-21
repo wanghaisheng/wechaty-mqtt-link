@@ -101,7 +101,11 @@ async function wechaty2chatdev(message) {
 
         case Message.Type.Contact:
             messageType = 'Contact'
-            textBox = await message.toContact()
+            try {
+                textBox = await message.toContact()
+            } catch (err) {
+
+            }
             text = '联系人卡片消息'
             break;
 
@@ -116,14 +120,16 @@ async function wechaty2chatdev(message) {
         text = file.name
     }
 
-    console.debug('textBox:', textBox)
+    // console.debug('textBox:', textBox)
 
     let room = message.room()
     let roomInfo = {}
     if (room && room.id) {
         roomInfo.id = room.id
-        roomInfo.avatar = room.avatar()
-        roomInfo.ownerId = room.owner()
+        let avatar = await room.avatar()
+        roomInfo.avatar = JSON.parse(JSON.stringify(avatar)).url
+
+        roomInfo.ownerId = room.owner().id
         try {
             roomInfo.topic = await room.topic()
         } catch (err) {
@@ -140,7 +146,7 @@ async function wechaty2chatdev(message) {
 
     let avatar = ''
     try {
-        avatar = await contact.avatar()
+        avatar = JSON.parse(JSON.stringify(await talker.avatar())).url
     } catch (err) {
 
     }
@@ -148,7 +154,7 @@ async function wechaty2chatdev(message) {
     let content = {}
     content.messageType = messageType
     content.text = text
-    content.raw = textBox
+    content.raw = textBox.payload || textBox._payload || {}
 
     let _payload = {
         "id": msgId,
@@ -156,7 +162,7 @@ async function wechaty2chatdev(message) {
             "id": talker.id,
             "gender": talker.gender() || '',
             "name": talker.name() || '',
-            "alias": talker.alias() || '',
+            "alias": await talker.alias() || '',
             "memberAlias": memberAlias,
             "avatar": avatar
         },
