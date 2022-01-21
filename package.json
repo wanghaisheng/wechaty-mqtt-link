@@ -1,15 +1,15 @@
 {
-  "name": "wechaty-mqtt-link1.0",
-  "version": "0.1.2",
-  "description": "Demo for wechaty-puppet-xp",
+  "name": "wechaty-mqtt-link",
+  "version": "0.1.0",
+  "description": "mqtt link for wechaty",
   "author": "atorber",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=16",
     "npm": ">=7"
   },
+  "type": "module",
   "dependencies": {
-    "@vikadata/vika": "^1.0.5",
     "file-box": "^1.4.12",
     "flow": "^0.2.3",
     "fs": "^0.0.1-security",
@@ -21,20 +21,18 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "uuid": "^8.3.2",
-    "wechaty": "^0.68.1",
+    "wechaty": "^0.73.8",
+    "wechaty-puppet": "^0.47.8",
     "wechaty-puppet-padlocal": "^0.4.2"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
-    "@chatie/tsconfig": "^4.6.2",
-    "check-node-version": "^4.2.1",
-    "is-pr": "^2.0.0",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "check-node-version": "^4.2.1"
   },
   "scripts": {
     "start": "node main.js",
+    "test": "node test/index.js",
     "start:mp": "node index.js",
     "xp": "node xp.js",
     "gm": "node wxtool.js",
@@ -43,10 +41,5 @@
     "logs": "pm2 logs",
     "restart": "pm2 restart wxtool.js",
     "stop": "pm2 stop wxtool.js"
-  },
-  "git": {
-    "scripts": {
-      "pre-push": "npx git-scripts-pre-push"
-    }
   }
 }

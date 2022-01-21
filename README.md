@@ -1,20 +1,46 @@
 ## 简介
 
-wechaty+vika+mqtt聊天机器人无服务架构方案
+wechaty-mqtt-link是一个基于wechaty+mqtt的聊天机器人客户端，可以使用mqtt与云端保持连接，向部署在异构环境的业务应用同步聊天消息及接受远程控制。
+
+配合聊天机器人控制器使用 https://github.com/atorber/easy-chatbot-controller
 
 wechaty <= v0.6.9
 
-本地或云服务器运行wechaty client=》使用百度云物联网核心套件中MQTT+规则引擎实现微信消息转发函数计算 =》百度云或腾讯云函数计算实现业务逻辑 =》vika维格表作为数据库读写数据
+## 实现架构
 
-## 操作步骤
+本地或云服务器运行wechaty client=》使用百度云物联网核心套件中MQTT+规则引擎实现微信消息转发函数计算 =》百度云或腾讯云函数计算实现业务逻辑
 
-1. 注册维格表，创建mp-chatbot空间
-2. 导入初始化表格，将database目录下的四个表格导入到该空间
-3. 配置bot表下的secret行的value，内容如下（使用自己的mqtt配置和维格表token替换对应字段，mqtt推荐使用百度云物联网核心套件）：
+## 示例
 
 ```
-{"mqtt":{"DeviceKey":"7813159edb154cb1a5c7cca80b82509f","host":"baiduiot.iot.gz.baidubce.com","password":"","port":443,"username":"alvxdkj/mpclient"},"vika":{"host":"https://api.airtable.com","token":""}}
-```
+import { Wechaty, ScanStatus, log } from 'wechaty'
 
-5. 获取维格表token，替换index.js中vika_token
-6. 运行node index.js
+import qrcodeTerminal from 'qrcode-terminal'
+
+import { wechaty2chatdev } from '../src/msg-format.js'
+import { ChatDevice } from '../src/chat-device.js'
+
+const bot = new Wechaty()
+const chatdev = new ChatDevice(process.env['MQTT_USERNAME'], process.env['MQTT_PASSWORD'], process.env['BOTID'])
+
+async function onMessage(msg) {
+    log.info('StarterBot', msg.toString())
+    // console.debug(msg)
+    let payload = await wechaty2chatdev(msg)
+    chatdev.pub_event(payload)
+    // console.debug(payload)
+    if (msg.text() == 'ding') {
+        msg.say('dong')
+    }
+}
+
+bot
+    .on('login', (user) => {
+        console.log(`User ${user} logined`)
+        chatdev.init(bot)
+    })
+    .on('message', onMessage)
+    .start()
+    .catch((e) => console.error(e))
+
+```
