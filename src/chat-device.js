@@ -5,6 +5,8 @@ import {
     Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
 } from "wechaty"
 
+import { wechaty2chatdev } from './msg-format.js'
+
 let chatbot
 
 class ChatDevice {
@@ -56,6 +58,11 @@ class ChatDevice {
 
     pub_event(msg) {
         this.mqttclient.publish(this.eventApi, msg);
+    }
+
+    async pub_message(msg){
+        let payload = await wechaty2chatdev(msg)
+        this.mqttclient.publish(this.eventApi, payload);
     }
 
     static getBot(){
