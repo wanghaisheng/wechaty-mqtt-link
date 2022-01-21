@@ -1,6 +1,9 @@
 import mqtt from 'mqtt'
 import { v4 } from 'uuid'
 import { FileBox } from 'file-box'
+import {
+    Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
+} from "wechaty"
 
 let chatbot
 
