@@ -1,6 +1,9 @@
 import mqtt from 'mqtt'
 import { v4 } from 'uuid'
 import { FileBox } from 'file-box'
+import {
+    Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
+} from "wechaty"
 
 let chatbot
 
@@ -329,7 +332,7 @@ async function sendAt(params, bot) {
     let room = await bot.Room.find({ id: params.room })
     const atUserList = [];
     for (const userId of atUserIdList) {
-        const cur_contact = await this.bot.Contact.load(userId);
+        const cur_contact = await bot.Contact.load(userId);
         atUserList.push(cur_contact);
     }
     await room.say(params.messagePayload, ...atUserList)
