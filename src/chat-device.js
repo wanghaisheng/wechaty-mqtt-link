@@ -1,19 +1,18 @@
-const mqtt = require('mqtt')
-const { v4 } = require('uuid')
-const { FileBox } = require('file-box')
+import mqtt from 'mqtt'
+import { v4 } from 'uuid'
+import { FileBox } from 'file-box'
 
-class Device {
-    constructor(host, port, username, password, clientId) {
-        this.bot = {}
-        this.mqttclient = mqtt.connect(`mqtt://${host}:${port}`, {
+class ChatDevice {
+    constructor(username, password, botId, message, bot) {
+        this.mqttclient = mqtt.connect(`mqtt://chatbot.iot.gz.baidubce.com:443`, {
             username: username,
             password: password,
-            clientId: clientId
+            clientId: botId
         })
         this.isConnected = ''
-        this.propertyApi = `$iot/${clientId}/events`
-        this.eventApi = `$iot/${clientId}/events`
-        this.commandApi = `$iot/${clientId}/msg`
+        this.propertyApi = `$iot/${botId}/events`
+        this.eventApi = `$iot/${botId}/events`
+        this.commandApi = `$iot/${botId}/msg`
     }
 
     async init() {
@@ -122,8 +121,7 @@ class Device {
         })
     }
 
-    sub_command(bot) {
-        this.bot = bot
+    sub_command() {
         this.mqttclient.subscribe(this.commandApi, function (err) {
             if (err) {
                 console.log(err)
@@ -131,114 +129,12 @@ class Device {
         })
     }
 
-    pub_property(name, info) {
-        this.mqttclient.publish(this.propertyApi, this.propertyMessage(name, info));
+    pub_property(msg) {
+        this.mqttclient.publish(this.propertyApi, msg);
     }
 
-    pub_event(name, info) {
-        this.mqttclient.publish(this.eventApi, this.eventMessage(name, info));
-    }
-
-    pub_message(message) {
-        const talker = message.talker()
-        const to = message.to()
-        const type = message.type()
-        let text = message.text()
-        let messageType = ''
-        let textBox = ''
-        if (type === this.bot.Message.Type.Unknown) {
-            messageType = 'Unknown'
-            textBox = '未知的消息类型'
-        }
-        if (type === this.bot.Message.Type.Attachment) {
-            messageType = 'Attachment'
-            // textBox = await message.toFileBox()
-        }
-        if (type === this.bot.Message.Type.Audio) {
-            messageType = 'Audio'
-            // textBox = await message.toFileBox()
-        }
-        if (type === this.bot.Message.Type.Contact) {
-            messageType = 'Contact'
-            // textBox = await message.toContact()
-        }
-        if (type === this.bot.Message.Type.Emoticon) {
-            messageType = 'Emoticon'
-            // textBox = '表情符号'
-        }
-        if (type === this.bot.Message.Type.Image) {
-            messageType = 'Image'
-            // textBox = await message.toFileBox()
-        }
-        if (type === this.bot.Message.Type.Text) {
-            messageType = 'Text'
-            textBox = '文本信息'
-        }
-        if (type === this.bot.Message.Type.Video) {
-            messageType = 'Video'
-            // textBox = await message.toFileBox()
-        }
-        if (type === this.bot.Message.Type.Url) {
-            messageType = 'Url'
-            // textBox = await message.toUrlLink()
-        }
-
-        console.debug('textBox:', textBox)
-
-        let room = message.room() || {}
-        room = JSON.parse(JSON.stringify(room))
-
-        if (room && room.id) {
-            delete room._payload.memberIdList
-        }
-
-        let _payload = {
-            talker,
-            to,
-            room,
-            type,
-            messageType,
-            text,
-            message,
-            textBox
-        }
-        _payload = JSON.stringify(_payload)
-        _payload = JSON.parse(_payload)
-
-        if (!message.self()) {
-            this.pub_event('message', _payload)
-
-        } else {
-            this.pub_event('message', _payload)
-        }
-    }
-
-    propertyMessage(name, info) {
-        let message = {
-            "reqId": v4(),
-            "method": "thing.property.post",
-            "version": "1.0",
-            "timestamp": new Date().getTime(),
-            "properties": {
-            }
-        }
-        message.properties[name] = info
-        message = JSON.stringify(message)
-        return message
-    }
-
-    eventMessage(name, info) {
-        let message = {
-            "reqId": v4(),
-            "method": "thing.event.post",
-            "version": "1.0",
-            "timestamp": new Date().getTime(),
-            "events": {
-            }
-        }
-        message.events[name] = info
-        message = JSON.stringify(message)
-        return message
+    pub_event(msg) {
+        this.mqttclient.publish(this.eventApi, msg);
     }
 
     async send(params) {
@@ -432,6 +328,5 @@ class Device {
 
 }
 
-module.exports = {
-    Device
-}
+export { ChatDevice }
+export default ChatDevice

@@ -8,6 +8,7 @@
     "node": ">=16",
     "npm": ">=7"
   },
+  "type": "module",
   "dependencies": {
     "@vikadata/vika": "^1.0.5",
     "file-box": "^1.4.12",
@@ -20,17 +21,19 @@
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "wechaty-puppet-service": "^1.10.2",
+    "wechaty": "^0.68.1",
+    "wechaty-puppet-padlocal": "^0.4.2"
   },
   "devDependencies": {
     "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
-    "check-node-version": "^4.2.1",
-    "wechaty": "^0.68.1",
-    "wechaty-puppet-padlocal": "^0.4.2"
+    "check-node-version": "^4.2.1"
   },
   "scripts": {
     "start": "node main.js",
+    "test": "node test/index.js",
     "start:mp": "node index.js",
     "xp": "node xp.js",
     "gm": "node wxtool.js",
@@ -39,5 +42,10 @@
     "logs": "pm2 logs",
     "restart": "pm2 restart wxtool.js",
     "stop": "pm2 stop wxtool.js"
+  },
+  "git": {
+    "scripts": {
+      "pre-push": "npx git-scripts-pre-push"
+    }
   }
 }
