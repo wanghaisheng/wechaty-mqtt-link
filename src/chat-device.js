@@ -13,9 +13,9 @@ class ChatDevice {
             clientId: botId
         })
         this.isConnected = ''
-        this.propertyApi = `$iot/${botId}/events`
-        this.eventApi = `$iot/${botId}/events`
-        this.commandApi = `$iot/${botId}/msg`
+        this.propertyApi = `thing/chatbot/${botId}/property/post`
+        this.eventApi = `thing/chatbot/${botId}/event/post`
+        this.commandApi = `thing/chatbot/${botId}/command/invoke`
     }
 
     init(bot) {
