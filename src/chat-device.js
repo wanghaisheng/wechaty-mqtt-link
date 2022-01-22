@@ -60,12 +60,12 @@ class ChatDevice {
         this.mqttclient.publish(this.eventApi, msg);
     }
 
-    async pub_message(msg){
+    async pub_message(msg) {
         let payload = await wechaty2chatdev(msg)
         this.mqttclient.publish(this.eventApi, payload);
     }
 
-    static getBot(){
+    static getBot() {
         return this.bot
     }
 
@@ -107,7 +107,7 @@ class ChatDevice {
 
         }
         if (name == 'roomCreate') {
-
+            createRoom(params, chatbot)
         }
         if (name == 'roomAdd') {
 
@@ -343,6 +343,19 @@ async function sendAt(params, bot) {
         atUserList.push(cur_contact);
     }
     await room.say(params.messagePayload, ...atUserList)
+}
+
+async function createRoom(params, bot) {
+    let contactList = []
+    for (let i in params.contactList) {
+        let c = await bot.Contact.find({ name: params.contactList[i] })
+        contactList.push(c)
+    }
+
+    const room = await bot.Room.create(contactList, params.topic)
+    // console.log('Bot', 'createDingRoom() new ding room created: %s', room)
+    // await room.topic(params.topic)
+    await room.say('你的专属群创建完成')
 }
 
 export { ChatDevice }
