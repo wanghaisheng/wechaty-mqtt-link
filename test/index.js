@@ -21,6 +21,9 @@ bot
         console.log(`User ${user} logined`)
         chatdev.init(bot)
     })
+    .on('ready', async () => {
+        console.debug('bot is ready')
+    })
     .on('message', onMessage)
     .start()
     .catch((e) => console.error(e))

@@ -133,7 +133,7 @@ async function wechaty2chatdev(message) {
         try {
             roomInfo.topic = await room.topic()
         } catch (err) {
-            roomInfo.topic = await room.topic()
+            roomInfo.topic = room.id
         }
     }
 
@@ -208,5 +208,5 @@ function eventMessage(name, info) {
     return message
 }
 
-export { wechaty2chatdev }
+export { wechaty2chatdev, propertyMessage }
 export default wechaty2chatdev

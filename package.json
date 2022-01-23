@@ -1,6 +1,6 @@
 {
   "name": "wechaty-mqtt-link",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "mqtt link for wechaty",
   "main": "src/index.js",
   "author": "atorber",
@@ -46,10 +46,15 @@
   },
   "publishConfig": {
     "access": "public",
-    "tag": "latest"
+    "tag": "next"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atorber/wechaty-mqtt-link.git"
+  },
+  "git": {
+    "scripts": {
+      "pre-push": "npx git-scripts-pre-push"
+    }
   }
 }

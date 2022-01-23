@@ -5,9 +5,10 @@ import {
     Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
 } from "wechaty"
 
-import { wechaty2chatdev } from './msg-format.js'
+import { wechaty2chatdev, propertyMessage } from './msg-format.js'
 
 let chatbot
+let chatdevice
 
 class ChatDevice {
     constructor(username, password, botId) {
@@ -25,6 +26,7 @@ class ChatDevice {
 
     init(bot) {
         chatbot = bot
+        chatdevice = this
         this.bot = bot
         this.mqttclient.on('connect', function () {
             this.isConnected = true
@@ -61,8 +63,13 @@ class ChatDevice {
     }
 
     async pub_message(msg) {
-        let payload = await wechaty2chatdev(msg)
-        this.mqttclient.publish(this.eventApi, payload);
+        try {
+            let payload = await wechaty2chatdev(msg)
+            this.mqttclient.publish(this.eventApi, payload);
+        } catch (err) {
+            console.error(err)
+        }
+
     }
 
     static getBot() {
@@ -143,9 +150,15 @@ class ChatDevice {
 
         }
         if (name == 'contactFindAll') {
-
+            getAllContact(chatdevice, chatbot)
         }
         if (name == 'contactFind') {
+
+        }
+        if (name == 'roomFindAll') {
+            getAllRoom(chatdevice, chatbot)
+        }
+        if (name == 'roomFind') {
 
         }
         if (name == 'config') {
@@ -154,6 +167,65 @@ class ChatDevice {
 
     }
 
+}
+
+async function getAllContact(chatdevice, bot) {
+    const contactList = await bot.Contact.findAll()
+    let friends = []
+    for (let i in contactList) {
+        let contact = contactList[1]
+        let avatar = ''
+        try {
+            avatar = JSON.parse(JSON.stringify(await contact.avatar())).url
+        } catch (err) {
+
+        }
+        let contactInfo = {
+            "id": contact.id,
+            "gender": contact.gender() || '',
+            "name": contact.name() || '',
+            "alias": await contact.alias() || '',
+            "avatar": avatar
+        }
+        friends.push(contactInfo)
+
+        if (friends.length == 100) {
+            let msg = propertyMessage('contactList', friends)
+            chatdevice.pub_property(msg)
+            friends = []
+        }
+    }
+    let msg = propertyMessage('contactList', friends)
+    chatdevice.pub_property(msg)
+
+}
+
+async function getAllRoom(chatdevice, bot) {
+    const roomList = await bot.Room.findAll()
+    for (let i in roomList) {
+        let room = roomList[i]
+        let roomInfo = {}
+        roomInfo.id = room.id
+
+        let avatar = await room.avatar()
+        roomInfo.avatar = JSON.parse(JSON.stringify(avatar)).url
+
+        roomInfo.ownerId = room.owner().id
+        try {
+            roomInfo.topic = await room.topic()
+        } catch (err) {
+            roomInfo.topic = room.id
+        }
+        let memberAlias = ''
+        try {
+            memberAlias = await room.alias(talker)
+        } catch (err) {
+
+        }
+        roomList[i] = roomInfo
+    }
+    let msg = propertyMessage('roomList', roomList)
+    chatdevice.pub_property(msg)
 }
 
 async function send(params, bot) {
