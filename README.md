@@ -12,6 +12,8 @@ wechaty <= v0.6.9
 
 ![image](https://user-images.githubusercontent.com/19552906/161385026-0c6c4de6-f2fd-45d6-9994-827579d0a561.png)
 
+> 如何[从百度云IoTCore中获得MQTT用户名和密码](https://cloud.baidu.com/doc/IoTCore/s/pk7ophcd8)
+
 ## 示例
 
 ```
