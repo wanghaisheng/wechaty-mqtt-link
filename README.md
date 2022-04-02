@@ -10,6 +10,8 @@ wechaty <= v0.6.9
 
 本地或云服务器运行wechaty client=》使用百度云物联网核心套件中MQTT+规则引擎实现微信消息转发函数计算 =》百度云或腾讯云函数计算实现业务逻辑
 
+![image](https://user-images.githubusercontent.com/19552906/161385026-0c6c4de6-f2fd-45d6-9994-827579d0a561.png)
+
 ## 示例
 
 ```
