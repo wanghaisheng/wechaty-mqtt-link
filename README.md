@@ -2,15 +2,13 @@
 
 wechaty-mqtt-link是一个基于wechaty+mqtt的聊天机器人客户端，可以使用mqtt与云端保持连接，向部署在异构环境的业务应用同步聊天消息及接受远程控制。
 
-配合聊天机器人控制器使用 https://github.com/atorber/easy-chatbot-controller
+搭配 [easy-chatbot-controller](https://github.com/atorber/easy-chatbot-controller) 使用轻松实现无服务架构http请求控制机器人
 
 wechaty <= v0.6.9
 
 ## 实现架构
 
 在本地或云服务器运行wechaty client -> 使用百度云物联网核心套件中MQTT+规则引擎实现微信消息转发Webhook
-
-搭配 [easy-chatbot-controller](https://github.com/atorber/easy-chatbot-controller) 使用轻松实现无服务架构http请求控制机器人
 
 ![image](https://user-images.githubusercontent.com/19552906/161385026-0c6c4de6-f2fd-45d6-9994-827579d0a561.png)
 
