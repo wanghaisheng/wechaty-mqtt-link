@@ -23,6 +23,8 @@ bot
     })
     .on('ready', async () => {
         console.debug('bot is ready')
+        const contactList = await bot.Contact.findAll() 
+        console.debug(contactList)
     })
     .on('message', onMessage)
     .start()

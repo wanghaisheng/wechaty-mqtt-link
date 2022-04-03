@@ -1,6 +1,6 @@
 {
   "name": "wechaty-mqtt-link",
-  "version": "0.4.0",
+  "version": "0.3.0",
   "description": "mqtt link for wechaty",
   "main": "src/index.js",
   "author": "atorber",
@@ -27,8 +27,10 @@
     "@chatie/eslint-config": "^1.0.4",
     "@chatie/git-scripts": "^0.6.2",
     "check-node-version": "^4.2.1",
-    "wechaty": "^0.62.1",
-    "wechaty-mqtt-link": "^0.2.1"
+    "wechaty-mqtt-link": "^0.2.1",
+    "wechaty": "^0.73.8",
+    "wechaty-puppet": "^0.47.8",
+    "wechaty-puppet-padlocal": "^0.4.2"
   },
   "scripts": {
     "start": "node main.js",
@@ -44,7 +46,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "tag": "latest"
+    "tag": "next"
   },
   "repository": {
     "type": "git",

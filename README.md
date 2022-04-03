@@ -4,7 +4,11 @@ wechaty-mqtt-link是一个基于wechaty+mqtt的聊天机器人客户端，可以
 
 搭配 [easy-chatbot-controller](https://github.com/atorber/easy-chatbot-controller) 使用轻松实现无服务架构http请求控制机器人
 
-wechaty <= v0.6.9
+wechaty版本依赖：
+
+[wechaty-puppet-padlocal](https://wechaty.js.org/docs/puppet-services/wxwork) < v1.0 (参考package.json)
+
+[wechaty-puppet-wxwork](https://wechaty.js.org/docs/puppet-services/padlocal) v0.62.1 (参考package-padlocal.json)
 
 ## 实现架构
 

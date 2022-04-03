@@ -126,10 +126,22 @@ async function wechaty2chatdev(message) {
     let roomInfo = {}
     if (room && room.id) {
         roomInfo.id = room.id
-        let avatar = await room.avatar()
-        roomInfo.avatar = JSON.parse(JSON.stringify(avatar)).url
+        try {
+            let room_avatar = await room.avatar()
+            console.debug('群头像room.avatar()============')
+            console.debug(typeof room_avatar)
+            console.debug(room_avatar)
+            console.debug('END============')
 
+            roomInfo.avatar = JSON.parse(JSON.stringify(room_avatar)).url
+        } catch (err) {
+            console.debug('群头像捕获了错误============')
+            console.debug(typeof err)
+            console.debug(err)
+            console.debug('END============')
+        }
         roomInfo.ownerId = room.owner().id
+
         try {
             roomInfo.topic = await room.topic()
         } catch (err) {
@@ -146,9 +158,17 @@ async function wechaty2chatdev(message) {
 
     let avatar = ''
     try {
-        avatar = JSON.parse(JSON.stringify(await talker.avatar())).url
-    } catch (err) {
 
+        avatar = await talker.avatar()
+        console.debug('好友头像talker.avatar()============')
+        console.debug(avatar)
+        console.debug('END============')
+        avatar = JSON.parse(JSON.stringify(avatar)).url
+
+    } catch (err) {
+        console.debug('好友头像捕获了错误============')
+        console.debug(err)
+        console.debug('END============')
     }
 
     let content = {}

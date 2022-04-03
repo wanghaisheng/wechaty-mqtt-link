@@ -380,7 +380,7 @@ async function send(params, bot) {
     const toContacts = params.toContacts
 
     for (let i = 0; i < toContacts.length; i++) {
-        if (toContacts[i].split('@').length == 2) {
+        if (toContacts[i].split('@').length == 2 || toContacts[i].split(':').length == 2) {
             console.debug(`向群${toContacts[i]}发消息`)
             let room = await bot.Room.find({ id: toContacts[i] })
             if (room) {
