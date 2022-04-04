@@ -50,10 +50,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atorber/wechaty-mqtt-link.git"
-  },
-  "git": {
-    "scripts": {
-      "pre-push": "npx git-scripts-pre-push"
-    }
   }
 }
