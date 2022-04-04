@@ -5,7 +5,10 @@ import {
     Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
 } from "wechaty"
 
+import { wechaty2chatdev, propertyMessage } from './msg-format.js'
+
 let chatbot
+let chatdevice
 
 class ChatDevice {
     constructor(username, password, botId) {
@@ -23,6 +26,7 @@ class ChatDevice {
 
     init(bot) {
         chatbot = bot
+        chatdevice = this
         this.bot = bot
         this.mqttclient.on('connect', function () {
             this.isConnected = true
@@ -58,7 +62,17 @@ class ChatDevice {
         this.mqttclient.publish(this.eventApi, msg);
     }
 
-    static getBot(){
+    async pub_message(msg) {
+        try {
+            let payload = await wechaty2chatdev(msg)
+            this.mqttclient.publish(this.eventApi, payload);
+        } catch (err) {
+            console.error(err)
+        }
+
+    }
+
+    static getBot() {
         return this.bot
     }
 
@@ -100,7 +114,7 @@ class ChatDevice {
 
         }
         if (name == 'roomCreate') {
-
+            createRoom(params, chatbot)
         }
         if (name == 'roomAdd') {
 
@@ -136,9 +150,15 @@ class ChatDevice {
 
         }
         if (name == 'contactFindAll') {
-
+            getAllContact(chatdevice, chatbot)
         }
         if (name == 'contactFind') {
+
+        }
+        if (name == 'roomFindAll') {
+            getAllRoom(chatdevice, chatbot)
+        }
+        if (name == 'roomFind') {
 
         }
         if (name == 'config') {
@@ -147,6 +167,65 @@ class ChatDevice {
 
     }
 
+}
+
+async function getAllContact(chatdevice, bot) {
+    const contactList = await bot.Contact.findAll()
+    let friends = []
+    for (let i in contactList) {
+        let contact = contactList[1]
+        let avatar = ''
+        try {
+            avatar = JSON.parse(JSON.stringify(await contact.avatar())).url
+        } catch (err) {
+
+        }
+        let contactInfo = {
+            "id": contact.id,
+            "gender": contact.gender() || '',
+            "name": contact.name() || '',
+            "alias": await contact.alias() || '',
+            "avatar": avatar
+        }
+        friends.push(contactInfo)
+
+        if (friends.length == 100) {
+            let msg = propertyMessage('contactList', friends)
+            chatdevice.pub_property(msg)
+            friends = []
+        }
+    }
+    let msg = propertyMessage('contactList', friends)
+    chatdevice.pub_property(msg)
+
+}
+
+async function getAllRoom(chatdevice, bot) {
+    const roomList = await bot.Room.findAll()
+    for (let i in roomList) {
+        let room = roomList[i]
+        let roomInfo = {}
+        roomInfo.id = room.id
+
+        let avatar = await room.avatar()
+        roomInfo.avatar = JSON.parse(JSON.stringify(avatar)).url
+
+        roomInfo.ownerId = room.owner().id
+        try {
+            roomInfo.topic = await room.topic()
+        } catch (err) {
+            roomInfo.topic = room.id
+        }
+        let memberAlias = ''
+        try {
+            memberAlias = await room.alias(talker)
+        } catch (err) {
+
+        }
+        roomList[i] = roomInfo
+    }
+    let msg = propertyMessage('roomList', roomList)
+    chatdevice.pub_property(msg)
 }
 
 async function send(params, bot) {
@@ -238,8 +317,10 @@ async function send(params, bot) {
     } */
         // msg = FileBox.fromUrl(params.messagePayload)
         if (params.messagePayload.indexOf('http') != -1 || params.messagePayload.indexOf('https') != -1) {
+            console.debug('图片http地址：' + params.messagePayload)
             msg = FileBox.fromUrl(params.messagePayload)
         } else {
+            console.debug('图片本地地址：' + params.messagePayload)
             msg = FileBox.fromFile(params.messagePayload)
         }
 
@@ -298,10 +379,12 @@ async function send(params, bot) {
         }
     }
 
+    console.debug(msg)
+
     const toContacts = params.toContacts
 
     for (let i = 0; i < toContacts.length; i++) {
-        if (toContacts[i].split('@').length == 2) {
+        if (toContacts[i].split('@').length == 2 || toContacts[i].split(':').length == 2) {
             console.debug(`向群${toContacts[i]}发消息`)
             let room = await bot.Room.find({ id: toContacts[i] })
             if (room) {
@@ -336,6 +419,19 @@ async function sendAt(params, bot) {
         atUserList.push(cur_contact);
     }
     await room.say(params.messagePayload, ...atUserList)
+}
+
+async function createRoom(params, bot) {
+    let contactList = []
+    for (let i in params.contactList) {
+        let c = await bot.Contact.find({ name: params.contactList[i] })
+        contactList.push(c)
+    }
+
+    const room = await bot.Room.create(contactList, params.topic)
+    // console.log('Bot', 'createDingRoom() new ding room created: %s', room)
+    // await room.topic(params.topic)
+    await room.say('你的专属群创建完成')
 }
 
 export { ChatDevice }

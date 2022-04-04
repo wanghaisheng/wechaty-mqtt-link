@@ -2,7 +2,7 @@ import { Wechaty, ScanStatus, log } from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
 
-import { ChatDevice } from '../src/index.js'
+import { ChatDevice } from 'wechaty-mqtt-link'
 
 const bot = new Wechaty()
 const chatdev = new ChatDevice(process.env['MQTT_USERNAME'], process.env['MQTT_PASSWORD'], process.env['BOTID'])
@@ -20,11 +20,6 @@ bot
     .on('login', (user) => {
         console.log(`User ${user} logined`)
         chatdev.init(bot)
-    })
-    .on('ready', async () => {
-        console.debug('bot is ready')
-        const contactList = await bot.Contact.findAll() 
-        console.debug(contactList)
     })
     .on('message', onMessage)
     .start()

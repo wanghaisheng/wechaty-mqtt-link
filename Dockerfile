@@ -4,4 +4,4 @@ COPY package.json ./
 
 RUN npm install
 COPY . .
-CMD [ "node", "examples/ding-dong-bot.js" ]
+CMD [ "node", "src/index.js" ]

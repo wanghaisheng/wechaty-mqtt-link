@@ -11,7 +11,7 @@
   },
   "type": "module",
   "dependencies": {
-    "file-box": "^0.23.12",
+    "file-box": "^1.5.1",
     "flow": "^0.2.3",
     "fs": "^0.0.1-security",
     "moment": "^2.29.1",
@@ -28,8 +28,7 @@
     "@chatie/git-scripts": "^0.6.2",
     "check-node-version": "^4.2.1",
     "wechaty": "^0.62.1",
-    "wechaty-mqtt-link": "^0.4.0",
-    "wechaty-puppet-service": "^1.18.2"
+    "wechaty-mqtt-link": "^0.4.0"
   },
   "scripts": {
     "start": "node main.js",
@@ -50,5 +49,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/atorber/wechaty-mqtt-link.git"
+  },
+  "git": {
+    "scripts": {
+      "pre-push": "npx git-scripts-pre-push"
+    }
   }
 }
