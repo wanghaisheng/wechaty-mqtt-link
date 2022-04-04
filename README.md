@@ -6,9 +6,9 @@ wechaty-mqtt-link是一个基于wechaty+mqtt的聊天机器人客户端，可以
 
 wechaty版本依赖：
 
-[wechaty-puppet-padlocal](https://wechaty.js.org/docs/puppet-services/wxwork) < v1.0 (参考package.json)
+[wechaty-puppet-padlocal](https://wechaty.js.org/docs/puppet-services/wxwork) wechaty@v1.xx (参考package.json)
 
-[wechaty-puppet-wxwork](https://wechaty.js.org/docs/puppet-services/padlocal) v0.62.1 (参考package-padlocal.json)
+[wechaty-puppet-wxwork](https://wechaty.js.org/docs/puppet-services/padlocal) wechaty@v1.xx (参考package-padlocal.json)
 
 ## 实现架构
 
