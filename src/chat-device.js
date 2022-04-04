@@ -317,8 +317,10 @@ async function send(params, bot) {
     } */
         // msg = FileBox.fromUrl(params.messagePayload)
         if (params.messagePayload.indexOf('http') != -1 || params.messagePayload.indexOf('https') != -1) {
+            console.debug('图片http地址：' + params.messagePayload)
             msg = FileBox.fromUrl(params.messagePayload)
         } else {
+            console.debug('图片本地地址：' + params.messagePayload)
             msg = FileBox.fromFile(params.messagePayload)
         }
 
@@ -376,6 +378,8 @@ async function send(params, bot) {
             msg: '不支持的消息类型'
         }
     }
+
+    console.debug(msg)
 
     const toContacts = params.toContacts
 
