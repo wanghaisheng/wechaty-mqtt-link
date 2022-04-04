@@ -1,16 +1,28 @@
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
+/**
+ * Wechaty - Conversational RPA SDK for Chatbot Makers.
+ *  - https://github.com/wechaty/wechaty
+ */
+// https://stackoverflow.com/a/42817956/1123955
+// https://github.com/motdotla/dotenv/issues/89#issuecomment-587753552
 import 'dotenv/config.js'
 
 import {
-  Contact,
-  Message,
+  // Contact,
+  // Message,
   ScanStatus,
   WechatyBuilder,
   log,
 } from 'wechaty'
 
 import qrcodeTerminal from 'qrcode-terminal'
+import { ChatDevice } from '../src/index.js'
 
-import { ChatDevice } from '../src/index'
+const bot = WechatyBuilder.build({
+  name: 'ding-dong-bot',
+})
+
+const chatdev = new ChatDevice(process.env['MQTT_USERNAME'], process.env['MQTT_PASSWORD'], process.env['BOTID'])
 
 function onScan(qrcode, status) {
   if (status === ScanStatus.Waiting || status === ScanStatus.Timeout) {
@@ -27,9 +39,11 @@ function onScan(qrcode, status) {
   }
 }
 
-function onLogin(user) {
+async function onLogin(user) {
   log.info('StarterBot', '%s login', user)
   chatdev.init(bot)
+  await bot.Contact.findAll()
+  await bot.Room.findAll()
 }
 
 function onLogout(user) {
@@ -38,18 +52,11 @@ function onLogout(user) {
 
 async function onMessage(msg) {
   log.info('StarterBot', msg.toString())
-  // console.debug(msg)
   chatdev.pub_message(msg)
-
   if (msg.text() === 'ding') {
     await msg.say('dong')
   }
 }
-
-const bot = WechatyBuilder.build({
-  name: 'ding-dong-bot',
-})
-const chatdev = new ChatDevice(process.env['MQTT_USERNAME'], process.env['MQTT_PASSWORD'], process.env['BOTID'])
 
 bot.on('scan', onScan)
 bot.on('login', onLogin)

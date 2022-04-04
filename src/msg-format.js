@@ -1,8 +1,14 @@
 import { v4 } from 'uuid'
 import moment from 'moment'
+// import { log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram } from "wechaty"
+
 import {
-    Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
-} from "wechaty"
+    // Contact,
+    // Message,
+    types
+} from 'wechaty'
+
+// console.debug(types.Message)
 
 function getCurTime() {
     //timestamp是整数，否则要parseInt转换
@@ -13,7 +19,7 @@ function getCurTime() {
     return time
 }
 
-async function wechaty2chatdev(message) {
+async function wechaty2chatdev(message, bot) {
     let curTime = getCurTime()
     let timeHms = moment(curTime).format("YYYY-MM-DD HH:mm:ss")
 
@@ -36,26 +42,26 @@ async function wechaty2chatdev(message) {
 
     switch (message.type()) {
         // 文本消息
-        case Message.Type.Text:
+        case types.Message.Text:
             messageType = 'Text'
             text = message.text()
             break;
 
         // 图片消息
-        case Message.Type.Image:
+        case types.Message.Image:
             messageType = 'Image'
             file = await message.toImage().artwork()
             break;
 
         // 链接卡片消息
-        case Message.Type.Url:
+        case types.Message.Url:
             messageType = 'Url'
             textBox = await message.toUrlLink()
             text = '链接卡片消息'
             break;
 
         // 小程序卡片消息
-        case Message.Type.MiniProgram:
+        case types.Message.MiniProgram:
             messageType = 'MiniProgram'
             textBox = await message.toMiniProgram();
             text = '小程序卡片消息'
@@ -76,30 +82,30 @@ async function wechaty2chatdev(message) {
             break;
 
         // 语音消息
-        case Message.Type.Audio:
+        case types.Message.Audio:
             messageType = 'Audio'
             file = await message.toFileBox()
             break;
 
         // 视频消息
-        case Message.Type.Video:
+        case types.Message.Video:
             messageType = 'Video'
             file = await message.toFileBox();
             break;
 
         // 动图表情消息
-        case Message.Type.Emoticon:
+        case types.Message.Emoticon:
             messageType = 'Emoticon'
             file = await message.toFileBox();
             break;
 
         // 文件消息
-        case Message.Type.Attachment:
+        case types.Message.Attachment:
             messageType = 'Attachment'
             file = await message.toFileBox()
             break;
 
-        case Message.Type.Contact:
+        case types.Message.Contact:
             messageType = 'Contact'
             try {
                 textBox = await message.toContact()
@@ -128,24 +134,25 @@ async function wechaty2chatdev(message) {
         roomInfo.id = room.id
         try {
             let room_avatar = await room.avatar()
-            console.debug('群头像room.avatar()============')
-            console.debug(typeof room_avatar)
             console.debug(room_avatar)
-            console.debug('END============')
 
-            roomInfo.avatar = JSON.parse(JSON.stringify(room_avatar)).url
+            const name = room_avatar.name
+            room_avatar.toFile('avatar/room/' + name, true)
+            console.log(`Contact: ${await room.topic()} with avatar file: ${name}`)
+
+            roomInfo.avatar = JSON.parse(JSON.stringify(room_avatar)).url || ''
+
         } catch (err) {
-            console.debug('群头像捕获了错误============')
-            console.debug(typeof err)
-            console.debug(err)
-            console.debug('END============')
+            console.error('获取群头像失败')
+            // console.error(err)
+            roomInfo.avatar = ''
         }
-        roomInfo.ownerId = room.owner().id
 
+        roomInfo.ownerId = room.owner().id
         try {
             roomInfo.topic = await room.topic()
         } catch (err) {
-            roomInfo.topic = room.id
+            roomInfo.topic = await room.topic()
         }
     }
 
@@ -158,17 +165,14 @@ async function wechaty2chatdev(message) {
 
     let avatar = ''
     try {
-
         avatar = await talker.avatar()
-        console.debug('好友头像talker.avatar()============')
+        console.debug('好友头像成功：')
         console.debug(avatar)
-        console.debug('END============')
         avatar = JSON.parse(JSON.stringify(avatar)).url
-
     } catch (err) {
-        console.debug('好友头像捕获了错误============')
-        console.debug(err)
-        console.debug('END============')
+        console.debug('好友头像失败：')
+        console.error(err)
+
     }
 
     let content = {}
@@ -194,6 +198,7 @@ async function wechaty2chatdev(message) {
 
     msg.events.message = _payload
     msg = JSON.stringify(msg)
+    console.debug(msg)
 
     return msg
 

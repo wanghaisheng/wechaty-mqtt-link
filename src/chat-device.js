@@ -1,9 +1,11 @@
 import mqtt from 'mqtt'
 import { v4 } from 'uuid'
 import { FileBox } from 'file-box'
-import {
-    Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
-} from "wechaty"
+
+// import {
+//     payloads
+// } from 'wechaty'
+
 
 import { wechaty2chatdev, propertyMessage } from './msg-format.js'
 
@@ -44,6 +46,7 @@ class ChatDevice {
         })
         this.mqttclient.on('message', this.onMessage)
         this.sub_command()
+        console.debug('init done ...')
     }
 
     sub_command() {
@@ -64,7 +67,7 @@ class ChatDevice {
 
     async pub_message(msg) {
         try {
-            let payload = await wechaty2chatdev(msg)
+            let payload = await wechaty2chatdev(msg, this.bot)
             this.mqttclient.publish(this.eventApi, payload);
         } catch (err) {
             console.error(err)
@@ -345,8 +348,7 @@ async function send(params, bot) {
             }
         }
     } */
-        msg = new UrlLink(params.messagePayload)
-
+        msg = new bot.UrlLink(params.messagePayload)
     } else if (params.messageType == 'MiniProgram') {
         /* {
         "reqId":"442c1da4-9d3a-4f9b-a6e9-bfe858e4ac43",
@@ -371,7 +373,8 @@ async function send(params, bot) {
             }
         }
     } */
-        msg = new MiniProgram(params.messagePayload)
+        msg = new bot.MiniProgram(params.messagePayload)
+
 
     } else {
         return {
