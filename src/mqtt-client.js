@@ -1,18 +1,6 @@
 import mqtt from 'mqtt'
-import { v4 } from 'uuid'
-import { FileBox } from 'file-box'
 
-// import {
-//     payloads
-// } from 'wechaty'
-
-
-import { wechaty2chatdev, propertyMessage } from './msg-format.js'
-
-let chatbot
-let chatdevice
-
-class ChatDevice {
+class MqttClient {
     constructor(username, password, botId) {
         this.bot
         this.mqttclient = mqtt.connect(`mqtt://chatbot.iot.gz.baidubce.com:1883`, {
@@ -450,5 +438,5 @@ async function createRoom(params, bot) {
     }
 }
 
-export { ChatDevice }
-export default ChatDevice
+export { MqttClient }
+export default MqttClient
