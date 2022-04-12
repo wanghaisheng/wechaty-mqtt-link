@@ -138,7 +138,7 @@ class ChatDevice {
 
         }
         if (name == 'roomQrcodeGet') {
-            getQrcod(params, chatbot, chatdevice)
+            getQrcode(params, chatbot, chatdevice)
 
         }
         if (name == 'memberAllGet') {
@@ -435,7 +435,7 @@ async function createRoom(params, bot) {
     await room.say('你的专属群创建完成')
 }
 
-async function getQrcod(params, bot, chatdevice) {
+async function getQrcode(params, bot, chatdevice) {
     let roomId = params.roomId
     let room = await bot.Room.find({ id: roomId })
     let qr = await room.qrcode()
