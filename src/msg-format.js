@@ -51,14 +51,14 @@ async function wechaty2chatdev(message) {
         case Message.Type.Url:
             messageType = 'Url'
             textBox = await message.toUrlLink()
-            text = '链接卡片消息'
+            text = JSON.stringify(JSON.parse(JSON.stringify(textBox)).payload)
             break;
 
         // 小程序卡片消息
         case Message.Type.MiniProgram:
             messageType = 'MiniProgram'
             textBox = await message.toMiniProgram();
-            text = '小程序卡片消息'
+            text = JSON.stringify(JSON.parse(JSON.stringify(textBox)).payload)
             /*
             miniProgram: 小程序卡片数据
             {
