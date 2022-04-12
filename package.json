@@ -1,6 +1,6 @@
 {
   "name": "wechaty-mqtt-link",
-  "version": "0.7",
+  "version": "0.7.1",
   "description": "mqtt link for wechaty",
   "main": "src/index.js",
   "author": "atorber",
