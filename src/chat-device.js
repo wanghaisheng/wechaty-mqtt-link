@@ -5,7 +5,7 @@ import {
     Contact, log, Message, ScanStatus, Wechaty, UrlLink, MiniProgram
 } from "wechaty"
 
-import { wechaty2chatdev, propertyMessage } from './msg-format.js'
+import { wechaty2chatdev, propertyMessage, eventMessage } from './msg-format.js'
 
 let chatbot
 let chatdevice
@@ -138,6 +138,7 @@ class ChatDevice {
 
         }
         if (name == 'roomQrcodeGet') {
+            getQrcod(params, chatbot, chatdevice)
 
         }
         if (name == 'memberAllGet') {
@@ -173,7 +174,7 @@ async function getAllContact(chatdevice, bot) {
     const contactList = await bot.Contact.findAll()
     let friends = []
     for (let i in contactList) {
-        let contact = contactList[1]
+        let contact = contactList[i]
         let avatar = ''
         try {
             avatar = JSON.parse(JSON.stringify(await contact.avatar())).url
@@ -432,6 +433,14 @@ async function createRoom(params, bot) {
     // console.log('Bot', 'createDingRoom() new ding room created: %s', room)
     // await room.topic(params.topic)
     await room.say('你的专属群创建完成')
+}
+
+async function getQrcod(params, bot, chatdevice) {
+    let roomId = params.roomId
+    let room = await bot.Room.find({ id: roomId })
+    let qr = await room.qrcode()
+    let msg = eventMessage('qrcode', qr)
+    chatdevice.pub_event(msg)
 }
 
 export { ChatDevice }
