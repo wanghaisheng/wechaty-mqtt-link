@@ -228,5 +228,5 @@ function eventMessage(name, info) {
     return message
 }
 
-export { wechaty2chatdev, propertyMessage }
+export { wechaty2chatdev, propertyMessage, eventMessage }
 export default wechaty2chatdev
