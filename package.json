@@ -45,7 +45,7 @@
   },
   "publishConfig": {
     "access": "public",
-    "tag": "latest"
+    "tag": "next"
   },
   "repository": {
     "type": "git",
