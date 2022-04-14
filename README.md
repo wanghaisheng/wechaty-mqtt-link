@@ -10,6 +10,10 @@ wechaty版本依赖：
 
 [wechaty-puppet-wxwork](https://wechaty.js.org/docs/puppet-services/padlocal) v0.62.1 (参考package-padlocal.json)
 
+## 特别说明
+
+当前分支（<v0.7分支）仅支持wechaty 0.xx版本，且仅在padlocal中验证通过，使用其他puppet时需要测试调试
+
 ## 实现架构
 
 在本地或云服务器运行wechaty client -> 使用百度云物联网核心套件中MQTT+规则引擎实现微信消息转发Webhook
